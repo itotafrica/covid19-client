@@ -9,7 +9,7 @@ import * as Model from './api.model';
 export class ApiService {
 
   readonly BASE_URL = 'https://covid19.mathdro.id/api/';
-  readonly NEWS_BASE_URL = 'https://covid19news.devs-cast.com/api/';
+  readonly NEWS_BASE_URL = 'http://katanga.digital/api/';
 
   constructor(private http: HttpClient) {
   }
