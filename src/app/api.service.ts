@@ -9,7 +9,7 @@ import * as Model from './api.model';
 export class ApiService {
 
   readonly BASE_URL = 'https://covid19.mathdro.id/api/';
-  readonly NEWS_BASE_URL = 'http://katanga.digital/api/';
+  readonly NEWS_BASE_URL = 'https://katanga.digital/api/';
 
   constructor(private http: HttpClient) {
   }
@@ -19,8 +19,8 @@ export class ApiService {
     return this.http.get<Model.Dashboard>(this.BASE_URL);
   }
 
-  getCongoCase(): Observable<Model.CongoCase> {
-    return this.http.get<Model.CongoCase>(this.NEWS_BASE_URL + 'cases/1');
+  getCongoCase(): Observable<Model.CongoCase[]> {
+    return this.http.get<Model.CongoCase[]>(this.NEWS_BASE_URL + 'cases');
   }
 
   getArticles(): Observable<Model.Article[]> {

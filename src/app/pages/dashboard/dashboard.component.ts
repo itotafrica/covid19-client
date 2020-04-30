@@ -23,7 +23,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   loading: boolean;
   data: Dashboard;
   error = false;
-  drc: CongoCase;
+  drc: CongoCase[];
   articles: Article[];
   timer: any;
   title = 'Animated Count';
@@ -56,11 +56,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         });
       });
   }
-
   loadDRC() {
     this.loading = true;
     this.apiService.getCongoCase()
-      .subscribe(data => this.drc = data);
+      .subscribe(data => {
+        this.drc = data;
+      });
   }
 
   load() {
