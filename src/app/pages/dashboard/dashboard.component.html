@@ -3,125 +3,82 @@
   <app-error *ngIf="error"></app-error>
 
   <div class="overflow-hidden pb-5" *ngIf="data">
-    <div class="tabs">
-      <div class="px-2 mb-5" style="text-align: center;">
-        <span class="text-gray-600 text-sm">{{'Mise à jour'| translate}} : {{ updatedAt }}</span> <br>
+    <div class="mb-10" *ngIf="drc">
+      <div *ngFor="let cases of drc">
+
+      <div class="px-2 mb-5">
+        <div class="text-grey-700 text-lg font-bold">{{'Situation à '  | translate}} {{cases.region}} </div>
       </div>
-      <input type="radio" id="tab1" name="tab-control" checked>
-      <input type="radio" id="tab2" name="tab-control">
-      <ul>
-        <li title="RD Congo">
-          <label for="tab1" role="button">
-            <span class="text-sm font-bold">{{'RDCongo' | translate}}</span>
-          </label>
-        </li>
-        <li title="Monde">
-          <label for="tab2" role="button">
-            <span class="text-sm font-bold">{{'Monde' | translate}}</span>
-          </label>
-        </li>
-      </ul>
-      <div class="content">
-        <section>
-          <div class="mb-10" *ngIf="drc">
-            <div class="px-2 mb-5">
-              <div class="text-lg font-bold">{{'Tout le territoire national' | translate}}</div>
-              <span class="text-gray-600 text-md">{{'Mise à jour'| translate}} : {{ updatedAt }}</span> <br>
-            </div>
-            <div class="grid grid-cols-6 gap-4">
-              <div class="col-span-6 md:col-span-4 lg:col-span-4 px-2">
-                <div class="min-w-full">
-                  <div>
-                    <div id="item-loading-chart"><ngx-skeleton-loader count="10" appearance="line"> </ngx-skeleton-loader></div>
-                    <canvas id="canvas"></canvas>
-                  </div>
-                </div>
-              </div>
-              <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
-                <div class="min-w-full">
-                  <div class="px-6 py-4">
-                    <p class="mb-3">
-                      <span class="text-gray-600 text-sm uppercase">{{'Guérisons' | translate}}</span>
-                      <app-animated-digit id="drc-recovered" class="font-bold" [digit]="drc[drc.length -1].recovered" [duration]="1000"></app-animated-digit>
-                    </p>
-                    <p class="mb-3">
-                      <span class="text-gray-600 text-sm uppercase">{{'Confirmés' | translate}}</span>
-                      <app-animated-digit id="drc-confirmed" class="font-bold" [digit]="drc[drc.length -1].confirmed" [duration]="1000"></app-animated-digit>
-                    </p>
-                    <p>
-                      <span class="text-gray-600 text-sm uppercase">{{'Morts' | translate}}</span>
-                      <app-animated-digit id="drc-deaths" class="font-bold" [digit]="drc[drc.length -1].deaths" [duration]="1000"></app-animated-digit>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="wrap-collabsible mt-10">
-              <input id="collapsible" class="toggle" type="checkbox">
-              <label for="collapsible" class="lbl-toggle text-gray-600 text-md">Détails des Provinces infectées</label>
-              <div class="collapsible-content">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 content-inner">
-                  <div *ngFor="let cases of drc; let i=index">
-                    <div *ngIf="i != drc.length-1" class="min-w-full bg-white rounded overflow-hidden shadow col-span-6 md:col-span-2 lg:col-span-2 p-5" style="text-align: center;">
-                      <div class="px-2">
-                        <div class="text-grey-700 text-md">{{cases.region}}</div>
-                      </div>
-                      <div class="grid grid-cols-3 gap-4 mt-5">
-                        <div class="col-span-1 px-2">
-                          <p title="{{cases.region}}: {{cases.confirmed}} cas confirmés" class="font-bold text-2xl" style="color: #ff00008f">{{cases.confirmed}}</p>
-                        </div>
-                        <div class="col-span-1 px-2">
-                          <p title="{{cases.region}}: {{cases.recovered}} guérisons" class="font-bold text-2xl" style="color: #48bb78">{{cases.recovered}}</p>
-                        </div>
-                        <div class="col-span-1 px-2 red">
-                          <p title="{{cases.region}}: {{cases.deaths}} morts" class="font-bold text-2xl" style="color: #0000008f;">{{cases.deaths}}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <div class="grid grid-cols-6 gap-4">
+        <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
+          <div class="min-w-full bg-white rounded overflow-hidden shadow">
+            <div class="px-6 py-4">
+              <div class="text-gray-700 mb-2">{{'Confirmés' | translate}}</div>
+
+                <app-animated-digit [digit]="cases.confirmed" [duration]="1000"></app-animated-digit>
+
+
             </div>
           </div>
-        </section>
-        <section>
-          <div>
-            <div class="px-2 mb-5">
-              <div class="text-lg font-bold">{{'Situation Globale' | translate}}</div>
-              <span class="text-gray-600 text-md">{{'Mise à jour'| translate}} : {{ updatedAt }}</span> <br>
-            </div>
-            <div class="grid grid-cols-6 gap-4">
-              <div class="col-span-6 md:col-span-4 lg:col-span-4 px-2">
-                <div class="min-w-full">
-                  <div>
-                    <div id="item-loading-chart-world"><ngx-skeleton-loader count="10" appearance="line"> </ngx-skeleton-loader></div>
-                    <canvas id="canvas-world"></canvas>
-                  </div>
-                </div>
-              </div>
-              <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
-                <div class="min-w-full">
-                  <div class="px-6 py-4">
-                    <p class="mb-3">
-                      <span class="text-gray-600 text-sm uppercase">{{'Guérisons' | translate}}</span>
-                      <app-animated-digit id="world-recovered" class="font-bold" [digit]="data.recovered.value" [duration]="500"></app-animated-digit>
-                    </p>
-                    <p class="mb-3">
-                      <span class="text-gray-600 text-sm uppercase">{{'Confirmés' | translate}}</span>
-                      <app-animated-digit id="world-confirmed" class="font-bold" [digit]="data.confirmed.value" [duration]="500"></app-animated-digit>
-                    </p>
-                    <p>
-                      <span class="text-gray-600 text-sm uppercase">{{'Morts' | translate}}</span>
-                      <app-animated-digit id="world-deaths" class="font-bold" [digit]="data.deaths.value" [duration]="500"></app-animated-digit>
-                    </p>
-                  </div>
-                </div>
-              </div>
+        </div>
+        <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
+          <div class="min-w-full bg-white rounded overflow-hidden shadow">
+            <div class="px-6 py-4">
+              <div class="text-gray-700 mb-2">{{'Guérisons' | translate}}</div>
+              <app-animated-digit [digit]="cases.recovered" [duration]="1000"></app-animated-digit>
             </div>
           </div>
-        </section>
+        </div>
+        <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2 red">
+          <div class="min-w-full bg-white rounded overflow-hidden shadow">
+            <div class="px-6 py-4">
+              <div class="text-gray-700 mb-2">{{'Morts' | translate}}</div>
+              <app-animated-digit [digit]="cases.deaths" [duration]="1000"></app-animated-digit>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+    </div>
+   <div>
+     <div class="px-2 mb-5">
+       <div class="text-lg font-bold">{{'Situation Globale' | translate}}</div>
+       <span class="text-gray-600 text-md">{{'Mise à jour'| translate}} : {{ updatedAt }}</span> <br>
+     </div>
+     <div class="grid grid-cols-6 gap-4">
+       <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
+         <div class="min-w-full bg-white rounded overflow-hidden shadow">
+           <div class="px-6 py-4">
+             <div class="text-gray-700 mb-2">{{'Confirmés' | translate}}</div>
+             <p class="font-bold text-xl text-base">
+               {{ data.confirmed.value }}
+             </p>
+           </div>
+         </div>
+       </div>
+       <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
+         <div class="min-w-full bg-white rounded overflow-hidden shadow">
+           <div class="px-6 py-4">
+             <div class="text-gray-700 mb-2">{{'Guérisons' | translate}}</div>
+             <p class="font-bold text-xl text-base">
+               {{ data.recovered.value }}
+             </p>
+           </div>
+         </div>
+       </div>
+       <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
+         <div class="min-w-full bg-white rounded overflow-hidden shadow">
+           <div class="px-6 py-4">
+             <div class="text-gray-700 mb-2">{{'Morts' | translate}}</div>
+             <p class="font-bold text-xl text-base">
+               {{ data.deaths.value }}
+             </p>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
 
     <div *ngIf="articles">
       <div class="px-2 mb-5 mt-10">
