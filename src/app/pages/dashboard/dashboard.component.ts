@@ -31,6 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   nums: Array<number> = [25, 76, 48];
 
+
   @ViewChild('oneItem', {static: true}) oneItem: any;
   @ViewChildren('count') count: QueryList<any>;
 
@@ -40,6 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     public translate: TranslateService,
     private elRef: ElementRef
   ) {}
+
 
   get updatedAt() {
     return (new Date(this.data.lastUpdate)).toLocaleString('fr-FR');
@@ -56,6 +58,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         });
       });
   }
+
 
   loadDRC() {
     let totalConfirmed = 0;
@@ -80,7 +83,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           region: 'Total'
         });
 
-        console.log(this.drc);
       });
   }
 
@@ -105,29 +107,54 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+
+    let worltotalConfirmed = 0;
+    let worldtotalRecovered = 0;
+    let worldtotalDeaths = 0;
+
+    this.apiService.getDashboard()
+      .subscribe(
+        data => {
+          this.data = data;
+          worltotalConfirmed=this.data.confirmed.value;
+          worldtotalRecovered=this.data.recovered.value;
+          worldtotalDeaths=this.data.deaths.value;
+          console.log(this.data.recovered)
+        });
+
+    let totalConfirmed = 0;
+    let totalRecovered = 0;
+    let totalDeaths = 0;
+    this.apiService.getCongoCase()
+      .subscribe(data => {
+        this.drc = data;
+
+        this.drc.forEach((region) => {
+          totalConfirmed += Number(region.confirmed);
+          totalRecovered += Number(region.recovered);
+          totalDeaths += Number(region.deaths);
+        });
+
+      });
+
     this.loadDRC();
     this.load();
     this.loadArticles();
     this.timer = setInterval(this.load, 300000);
-  }
 
-  ngOnDestroy(): void {
-    clearInterval(this.timer);
-  }
 
-  ngAfterViewInit() {
-    // tslint:disable-next-line:only-arrow-functions
+
     setTimeout(function() {
 
       document.getElementById('item-loading-chart').style.display = 'none';
       document.getElementById('item-loading-chart-world').style.display = 'none';
-      const configDRC = {
+      let configDRC = {
         data: {
           datasets: [{
             data: [
-              document.getElementById('drc-confirmed').getAttribute('ng-reflect-digit'),
-              document.getElementById('drc-recovered').getAttribute('ng-reflect-digit'),
-              document.getElementById('drc-deaths').getAttribute('ng-reflect-digit'),
+              totalConfirmed,
+              totalRecovered,
+              totalDeaths,
             ],
             backgroundColor: [
               '#ff00008f',
@@ -159,13 +186,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       };
-      const configWorld = {
+      let configWorld = {
         data: {
           datasets: [{
             data: [
-              document.getElementById('world-confirmed').getAttribute('ng-reflect-digit'),
-              document.getElementById('world-recovered').getAttribute('ng-reflect-digit'),
-              document.getElementById('world-deaths').getAttribute('ng-reflect-digit'),
+              worltotalConfirmed,
+              worldtotalRecovered,
+              worldtotalDeaths
             ],
             backgroundColor: [
               '#ff00008f',
@@ -197,11 +224,19 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       };
-      // tslint:disable-next-line:no-unused-expression
+
       new Chart.PolarArea(document.getElementById('canvas'), configDRC);
-      // tslint:disable-next-line:no-unused-expression
+
       new Chart.PolarArea(document.getElementById('canvas-world'), configWorld);
     }, 5000);
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.timer);
+  }
+
+  ngAfterViewInit() {
+
   }
 
   animateCount() {
