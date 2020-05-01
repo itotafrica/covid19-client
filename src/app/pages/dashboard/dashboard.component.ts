@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   nums: Array<number> = [25, 76, 48];
 
-  @ViewChild('oneItem', { static: true }) oneItem: any;
+  @ViewChild('oneItem', {static: true}) oneItem: any;
   @ViewChildren('count') count: QueryList<any>;
 
   constructor(
@@ -39,8 +39,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private domSanitizer: DomSanitizer,
     public translate: TranslateService,
     private elRef: ElementRef
-  ) {
-  }
+  ) {}
 
   get updatedAt() {
     return (new Date(this.data.lastUpdate)).toLocaleString('fr-FR');
@@ -57,8 +56,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         });
       });
   }
+
   loadDRC() {
-    let totalConfirmed = 0, totalRecovered = 0, totalDeaths = 0;
+    let totalConfirmed = 0;
+    let totalRecovered = 0;
+    let totalDeaths = 0;
 
     this.loading = true;
     this.apiService.getCongoCase()
@@ -70,12 +72,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           totalRecovered += Number(region.recovered);
           totalDeaths += Number(region.deaths);
         });
-    
+
         this.drc.push({
           confirmed: totalConfirmed.toString(),
           recovered: totalRecovered.toString(),
           deaths: totalDeaths.toString(),
-          region: "Total"
+          region: 'Total'
         });
 
         console.log(this.drc);
@@ -114,22 +116,23 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    setTimeout(function() { 
-      
-      document.getElementById("item-loading-chart").style.display = 'none';
-      document.getElementById("item-loading-chart-world").style.display = 'none';
-      var configDRC = {
+    // tslint:disable-next-line:only-arrow-functions
+    setTimeout(function() {
+
+      document.getElementById('item-loading-chart').style.display = 'none';
+      document.getElementById('item-loading-chart-world').style.display = 'none';
+      const configDRC = {
         data: {
           datasets: [{
             data: [
-              document.getElementById("drc-confirmed").getAttribute('ng-reflect-digit'),
-              document.getElementById("drc-recovered").getAttribute('ng-reflect-digit'),
-              document.getElementById("drc-deaths").getAttribute('ng-reflect-digit'),
+              document.getElementById('drc-confirmed').getAttribute('ng-reflect-digit'),
+              document.getElementById('drc-recovered').getAttribute('ng-reflect-digit'),
+              document.getElementById('drc-deaths').getAttribute('ng-reflect-digit'),
             ],
             backgroundColor: [
-              "#ff00008f",
-              "#48bb788f",
-              "#0000008f",
+              '#ff00008f',
+              '#48bb788f',
+              '#0000008f',
             ],
             label: 'Situation de la RDC'
           }],
@@ -156,18 +159,18 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       };
-      var configWorld = {
+      const configWorld = {
         data: {
           datasets: [{
             data: [
-              document.getElementById("world-confirmed").getAttribute('ng-reflect-digit'),
-              document.getElementById("world-recovered").getAttribute('ng-reflect-digit'),
-              document.getElementById("world-deaths").getAttribute('ng-reflect-digit'),
+              document.getElementById('world-confirmed').getAttribute('ng-reflect-digit'),
+              document.getElementById('world-recovered').getAttribute('ng-reflect-digit'),
+              document.getElementById('world-deaths').getAttribute('ng-reflect-digit'),
             ],
             backgroundColor: [
-              "#ff00008f",
-              "#48bb788f",
-              "#0000008f",
+              '#ff00008f',
+              '#48bb788f',
+              '#0000008f',
             ],
             label: 'Situation du Monde'
           }],
@@ -194,7 +197,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       };
+      // tslint:disable-next-line:no-unused-expression
       new Chart.PolarArea(document.getElementById('canvas'), configDRC);
+      // tslint:disable-next-line:no-unused-expression
       new Chart.PolarArea(document.getElementById('canvas-world'), configWorld);
     }, 5000);
   }
