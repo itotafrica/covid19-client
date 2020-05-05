@@ -56,27 +56,53 @@
                 </div>
               </div>
             </div>
-            <div class="wrap-collabsible mt-10">
+            <div class="wrap-collabsible mt-10" *ngIf="drc">
               <input id="collapsible" class="toggle" type="checkbox">
               <label for="collapsible" class="lbl-toggle text-gray-600 text-md">Détails des Provinces infectées</label>
               <div class="collapsible-content">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 content-inner">
-                  <div *ngFor="let cases of drc; let i=index">
-                    <div *ngIf="i != drc.length-1" class="min-w-full bg-white rounded overflow-hidden shadow col-span-6 md:col-span-2 lg:col-span-2 p-5" style="text-align: center;">
-                      <div class="px-2">
-                        <div class="text-grey-700 text-md">{{cases.region}}</div>
-                      </div>
-                      <div class="grid grid-cols-3 gap-4 mt-5">
-                        <div class="col-span-1 px-2">
-                          <p title="{{cases.region}}: {{cases.confirmed}} cas confirmés" class="font-bold text-2xl" style="color: #ff00008f">{{cases.confirmed}}</p>
-                        </div>
-                        <div class="col-span-1 px-2">
-                          <p title="{{cases.region}}: {{cases.recovered}} guérisons" class="font-bold text-2xl" style="color: #48bb78">{{cases.recovered}}</p>
-                        </div>
-                        <div class="col-span-1 px-2 red">
-                          <p title="{{cases.region}}: {{cases.deaths}} morts" class="font-bold text-2xl" style="color: #0000008f;">{{cases.deaths}}</p>
-                        </div>
-                      </div>
+                <div class="w-full">
+                  <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+                    <div class="align-middle inline-block min-w-full shadow overflow-hidden border-b border-gray-200">
+                      <table class="min-w-full">
+                        <thead>
+                          <tr>
+                            <th
+                              class="px-6 py-3 border-b border-gray-200 bg-gray-200 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                              {{'Province' | translate}}
+                            </th>
+                            <th
+                              class="px-6 py-3 border-b border-gray-200 bg-gray-200 text-center text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                              {{'Confirmés' | translate}}
+                            </th>
+                            <th
+                              class="px-6 py-3 border-b border-gray-200 bg-gray-200 text-center text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                              {{'Guérisons' | translate}}
+                            </th>
+                            <th
+                              class="px-6 py-3 border-b border-gray-200 bg-gray-200 text-center text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                              {{'Morts' | translate}}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                          <tr *ngFor="let cases of drc; let i=index" class="region-cases">
+                            <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                              <div class="flex items-center">
+                                <div class="text-sm leading-5 font-medium text-gray-900">{{ cases.region }}</div>
+                              </div>
+                            </td>
+                            <td class="px-6 py-4 text-center whitespace-no-wrap border-b border-gray-200">
+                              {{ cases.confirmed }}
+                            </td>
+                            <td class="px-6 py-4 text-center whitespace-no-wrap border-b border-gray-200">
+                              {{ cases.recovered }}
+                            </td>
+                            <td class="px-6 py-4 text-center whitespace-no-wrap border-b border-gray-200">
+                              {{ cases.deaths }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
