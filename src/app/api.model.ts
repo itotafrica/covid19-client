@@ -43,6 +43,7 @@ export interface CongoCase {
   confirmed: string;
   recovered: string;
   deaths: string;
+  region: string;
 }
 
 export interface DailyReport {

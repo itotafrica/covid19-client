@@ -13,24 +13,25 @@ import {ApiService} from 'src/app/api.service';
 import sweetAlert from 'sweetalert2';
 import {DomSanitizer} from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
+import { Chart } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styles: []
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   loading: boolean;
   data: Dashboard;
   error = false;
-  drc: CongoCase;
+  drc: CongoCase[];
   articles: Article[];
   timer: any;
   title = 'Animated Count';
 
   nums: Array<number> = [25, 76, 48];
 
-  @ViewChild('oneItem', { static: true }) oneItem: any;
+  @ViewChild('oneItem', {static: true}) oneItem: any;
   @ViewChildren('count') count: QueryList<any>;
 
   constructor(
@@ -38,8 +39,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private domSanitizer: DomSanitizer,
     public translate: TranslateService,
     private elRef: ElementRef
-  ) {
-  }
+  ) {}
 
   get updatedAt() {
     return (new Date(this.data.lastUpdate)).toLocaleString('fr-FR');
@@ -58,9 +58,30 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadDRC() {
+    let totalConfirmed = 0;
+    let totalRecovered = 0;
+    let totalDeaths = 0;
+
     this.loading = true;
     this.apiService.getCongoCase()
-      .subscribe(data => this.drc = data);
+      .subscribe(data => {
+        this.drc = data;
+
+        this.drc.forEach((region) => {
+          totalConfirmed += Number(region.confirmed);
+          totalRecovered += Number(region.recovered);
+          totalDeaths += Number(region.deaths);
+        });
+
+        this.drc.push({
+          confirmed: totalConfirmed.toString(),
+          recovered: totalRecovered.toString(),
+          deaths: totalDeaths.toString(),
+          region: 'Total'
+        });
+
+        console.log(this.drc);
+      });
   }
 
   load() {
@@ -95,6 +116,92 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    // tslint:disable-next-line:only-arrow-functions
+    setTimeout(function() {
+
+      document.getElementById('item-loading-chart').style.display = 'none';
+      document.getElementById('item-loading-chart-world').style.display = 'none';
+      const configDRC = {
+        data: {
+          datasets: [{
+            data: [
+              document.getElementById('drc-confirmed').getAttribute('ng-reflect-digit'),
+              document.getElementById('drc-recovered').getAttribute('ng-reflect-digit'),
+              document.getElementById('drc-deaths').getAttribute('ng-reflect-digit'),
+            ],
+            backgroundColor: [
+              '#ff00008f',
+              '#48bb788f',
+              '#0000008f',
+            ],
+            label: 'Situation de la RDC'
+          }],
+          labels: [
+            'Cas confirmés',
+            'Guérisons',
+            'Morts'
+          ]
+        },
+        options: {
+          responsive: true,
+          legend: {
+            position: 'left',
+          },
+          scale: {
+            ticks: {
+              beginAtZero: true
+            },
+            reverse: false
+          },
+          animation: {
+            animateRotate: false,
+            animateScale: true
+          }
+        }
+      };
+      const configWorld = {
+        data: {
+          datasets: [{
+            data: [
+              document.getElementById('world-confirmed').getAttribute('ng-reflect-digit'),
+              document.getElementById('world-recovered').getAttribute('ng-reflect-digit'),
+              document.getElementById('world-deaths').getAttribute('ng-reflect-digit'),
+            ],
+            backgroundColor: [
+              '#ff00008f',
+              '#48bb788f',
+              '#0000008f',
+            ],
+            label: 'Situation du Monde'
+          }],
+          labels: [
+            'Cas confirmés',
+            'Guérisons',
+            'Morts'
+          ]
+        },
+        options: {
+          responsive: true,
+          legend: {
+            position: 'left',
+          },
+          scale: {
+            ticks: {
+              beginAtZero: true
+            },
+            reverse: false
+          },
+          animation: {
+            animateRotate: false,
+            animateScale: true
+          }
+        }
+      };
+      // tslint:disable-next-line:no-unused-expression
+      new Chart.PolarArea(document.getElementById('canvas'), configDRC);
+      // tslint:disable-next-line:no-unused-expression
+      new Chart.PolarArea(document.getElementById('canvas-world'), configWorld);
+    }, 5000);
   }
 
   animateCount() {
