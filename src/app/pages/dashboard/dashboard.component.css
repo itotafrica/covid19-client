@@ -257,4 +257,9 @@
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
   }
+
+.region-cases:last-child {
+  font-weight: bold;
+  background-color: #48bb784d;
+}
   

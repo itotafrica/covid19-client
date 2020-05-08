@@ -3,82 +3,151 @@
   <app-error *ngIf="error"></app-error>
 
   <div class="overflow-hidden pb-5" *ngIf="data">
-    <div class="mb-10" *ngIf="drc">
-      <div *ngFor="let cases of drc">
-
-      <div class="px-2 mb-5">
-        <div class="text-grey-700 text-lg font-bold">{{'Situation à '  | translate}} {{cases.region}} </div>
+    <div class="tabs">
+      <div class="px-2 mb-5" style="text-align: center;">
+        <span class="text-gray-600 text-sm">{{'Mise à jour'| translate}} : {{ updatedAt }}</span> <br>
       </div>
-      <div class="grid grid-cols-6 gap-4">
-        <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
-          <div class="min-w-full bg-white rounded overflow-hidden shadow">
-            <div class="px-6 py-4">
-              <div class="text-gray-700 mb-2">{{'Confirmés' | translate}}</div>
-
-                <app-animated-digit [digit]="cases.confirmed" [duration]="1000"></app-animated-digit>
-
-
+      <input type="radio" id="tab1" name="tab-control" checked>
+      <input type="radio" id="tab2" name="tab-control">
+      <ul>
+        <li title="RD Congo">
+          <label for="tab1" role="button">
+            <span class="text-sm font-bold">{{'RDCongo' | translate}}</span>
+          </label>
+        </li>
+        <li title="Monde">
+          <label for="tab2" role="button">
+            <span class="text-sm font-bold">{{'Monde' | translate}}</span>
+          </label>
+        </li>
+      </ul>
+      <div class="content">
+        <section>
+          <div class="mb-10" *ngIf="drc">
+            <div class="px-2 mb-5">
+              <div class="text-lg font-bold">{{'Tout le territoire national' | translate}}</div>
+              <span class="text-gray-600 text-md">{{'Mise à jour'| translate}} : {{ updatedAt }}</span> <br>
+            </div>
+            <div class="grid grid-cols-6 gap-4">
+              <div class="col-span-6 md:col-span-4 lg:col-span-4 px-2">
+                <div class="min-w-full">
+                  <div>
+                    <div id="item-loading-chart"><ngx-skeleton-loader count="10" appearance="line"> </ngx-skeleton-loader></div>
+                    <canvas id="canvas"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
+                <div class="min-w-full">
+                  <div class="px-6 py-4">
+                    <p class="mb-3">
+                      <span class="text-gray-600 text-sm uppercase">{{'Guérisons' | translate}}</span>
+                      <app-animated-digit id="drc-recovered" class="font-bold" [digit]="drc[drc.length -1].recovered" [duration]="1000"></app-animated-digit>
+                    </p>
+                    <p class="mb-3">
+                      <span class="text-gray-600 text-sm uppercase">{{'Confirmés' | translate}}</span>
+                      <app-animated-digit id="drc-confirmed" class="font-bold" [digit]="drc[drc.length -1].confirmed" [duration]="1000"></app-animated-digit>
+                    </p>
+                    <p>
+                      <span class="text-gray-600 text-sm uppercase">{{'Morts' | translate}}</span>
+                      <app-animated-digit id="drc-deaths" class="font-bold" [digit]="drc[drc.length -1].deaths" [duration]="1000"></app-animated-digit>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="wrap-collabsible mt-10" *ngIf="drc">
+              <input id="collapsible" class="toggle" type="checkbox">
+              <label for="collapsible" class="lbl-toggle text-gray-600 text-md">Détails des Provinces infectées</label>
+              <div class="collapsible-content">
+                <div class="w-full">
+                  <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+                    <div class="align-middle inline-block min-w-full shadow overflow-hidden border-b border-gray-200">
+                      <table class="min-w-full">
+                        <thead>
+                        <tr>
+                          <th
+                            class="px-6 py-3 border-b border-gray-200 bg-gray-200 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                            {{'Province' | translate}}
+                          </th>
+                          <th
+                            class="px-6 py-3 border-b border-gray-200 bg-gray-200 text-center text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                            {{'Confirmés' | translate}}
+                          </th>
+                          <th
+                            class="px-6 py-3 border-b border-gray-200 bg-gray-200 text-center text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                            {{'Guérisons' | translate}}
+                          </th>
+                          <th
+                            class="px-6 py-3 border-b border-gray-200 bg-gray-200 text-center text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                            {{'Morts' | translate}}
+                          </th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                        <tr *ngFor="let cases of drc; let i=index" class="region-cases">
+                          <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                            <div class="flex items-center">
+                              <div class="text-sm leading-5 font-medium text-gray-900">{{ cases.region }}</div>
+                            </div>
+                          </td>
+                          <td class="px-6 py-4 text-center text-red-600 whitespace-no-wrap border-b border-gray-200">
+                            {{ cases.confirmed }}
+                          </td>
+                          <td class="px-6 py-4 text-center text-green-600 whitespace-no-wrap border-b border-gray-200">
+                            {{ cases.recovered }}
+                          </td>
+                          <td class="px-6 py-4 text-center whitespace-no-wrap border-b border-gray-200">
+                            {{ cases.deaths }}
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
-          <div class="min-w-full bg-white rounded overflow-hidden shadow">
-            <div class="px-6 py-4">
-              <div class="text-gray-700 mb-2">{{'Guérisons' | translate}}</div>
-              <app-animated-digit [digit]="cases.recovered" [duration]="1000"></app-animated-digit>
+        </section>
+        <section>
+          <div>
+            <div class="px-2 mb-5">
+              <div class="text-lg font-bold">{{'Situation Globale' | translate}}</div>
+              <span class="text-gray-600 text-md">{{'Mise à jour'| translate}} : {{ updatedAt }}</span> <br>
+            </div>
+            <div class="grid grid-cols-6 gap-4">
+              <div class="col-span-6 md:col-span-4 lg:col-span-4 px-2">
+                <div class="min-w-full">
+                  <div>
+                    <div id="item-loading-chart-world"><ngx-skeleton-loader count="10" appearance="line"> </ngx-skeleton-loader></div>
+                    <canvas id="canvas-world"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
+                <div class="min-w-full">
+                  <div class="px-6 py-4">
+                    <p class="mb-3">
+                      <span class="text-gray-600 text-sm uppercase">{{'Guérisons' | translate}}</span>
+                      <app-animated-digit id="world-recovered" class="font-bold" [digit]="data.recovered.value" [duration]="500"></app-animated-digit>
+                    </p>
+                    <p class="mb-3">
+                      <span class="text-gray-600 text-sm uppercase">{{'Confirmés' | translate}}</span>
+                      <app-animated-digit id="world-confirmed" class="font-bold" [digit]="data.confirmed.value" [duration]="500"></app-animated-digit>
+                    </p>
+                    <p>
+                      <span class="text-gray-600 text-sm uppercase">{{'Morts' | translate}}</span>
+                      <app-animated-digit id="world-deaths" class="font-bold" [digit]="data.deaths.value" [duration]="500"></app-animated-digit>
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2 red">
-          <div class="min-w-full bg-white rounded overflow-hidden shadow">
-            <div class="px-6 py-4">
-              <div class="text-gray-700 mb-2">{{'Morts' | translate}}</div>
-              <app-animated-digit [digit]="cases.deaths" [duration]="1000"></app-animated-digit>
-            </div>
-          </div>
-        </div>
+        </section>
       </div>
     </div>
-
-    </div>
-   <div>
-     <div class="px-2 mb-5">
-       <div class="text-lg font-bold">{{'Situation Globale' | translate}}</div>
-       <span class="text-gray-600 text-md">{{'Mise à jour'| translate}} : {{ updatedAt }}</span> <br>
-     </div>
-     <div class="grid grid-cols-6 gap-4">
-       <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
-         <div class="min-w-full bg-white rounded overflow-hidden shadow">
-           <div class="px-6 py-4">
-             <div class="text-gray-700 mb-2">{{'Confirmés' | translate}}</div>
-             <p class="font-bold text-xl text-base">
-               {{ data.confirmed.value }}
-             </p>
-           </div>
-         </div>
-       </div>
-       <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
-         <div class="min-w-full bg-white rounded overflow-hidden shadow">
-           <div class="px-6 py-4">
-             <div class="text-gray-700 mb-2">{{'Guérisons' | translate}}</div>
-             <p class="font-bold text-xl text-base">
-               {{ data.recovered.value }}
-             </p>
-           </div>
-         </div>
-       </div>
-       <div class="col-span-6 md:col-span-2 lg:col-span-2 px-2">
-         <div class="min-w-full bg-white rounded overflow-hidden shadow">
-           <div class="px-6 py-4">
-             <div class="text-gray-700 mb-2">{{'Morts' | translate}}</div>
-             <p class="font-bold text-xl text-base">
-               {{ data.deaths.value }}
-             </p>
-           </div>
-         </div>
-       </div>
-     </div>
-   </div>
 
     <div *ngIf="articles">
       <div class="px-2 mb-5 mt-10">
@@ -101,6 +170,112 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="press mt-20">
+      <div class="text-3xl text-gray-600 text-center font-bold">{{'La presse parle de nous' | translate}}</div>
+      <div class="grid grid-cols-1 mt-10 text-center sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5">
+        <div class="content-center h-20 m-5">
+          <a href="https://cio-mag.com/covid19/" target="_blank">
+            <img src="assets/press/cio-mag.png" title="CIO-Mag" alt="Logo CIO-Mag | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://www.covid-innovation.fr/carto/afrique-moyen-orient/" target="_blank">
+            <img src="assets/press/covid-innovation.png" title="Covid Innovation" alt="Logo Covid Innovation | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="http://osisa.org/covid19/" target="_blank">
+            <img src="assets/press/osisa.png" title="OSISA, Open Society Initiative for Southern Africa" alt="Logo OSISA, Open Society Initiative for Southern Africa | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="http://globaltamilnews.net/2020/141137/" target="_blank">
+            <img src="assets/press/global-tamil-news.png" title="Global Tamil News" alt="Logo Global Tamil News | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://indothaitrade.com/coronavirus-live-updates-covid19-pandemic/" target="_blank">
+            <img src="assets/press/indo-thai-trade.png" title="India Thailand Trade" alt="Logo India Thailand Trade | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://www.politico.cd/encontinu/2020/03/23/rdc-augustin-kibassa-met-a-la-disposition-du-ministere-de-la-sante-lapplication-mobile-covid-19-info.html/56133/" target="_blank">
+            <img src="assets/press/politico-cd.png" title="Politico cd" alt="Politico cd | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://www.mediacongo.net/article-actualite-66022_covid_19_info_une_application_mobile_pour_s_informer_et_suivre_de_pres_l_evolution_de_la_pandemie_en_rdc.html" target="_blank">
+            <img src="assets/press/mediacongo.png" title="MediaCongo" alt="Logo MediaCongo | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://www.radiookapi.net/2020/03/25/actualite/societe/la-rdc-se-dote-dune-application-mobile-pour-freiner-la-propagation-du" target="_blank">
+            <img src="assets/press/radio-okapi.png" title="Radio Okapi" alt="Radio Okapi | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://zoom-eco.net/a-la-une/rdc-site-internet-et-application-mobile-mis-en-ligne-pour-sensibiliser-contre-le-covid-19/" target="_blank">
+            <img src="assets/press/zoom-eco.png" title="Zoom-Eco" alt="Logo Zoom-Eco | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://www.7sur7.cd/2020/04/04/rdc-wwwstopcoronaviruscd-et-lappli-covid-19infocd-accessibles-sans-internet-communique" target="_blank">
+            <img src="assets/press/7sur7-cd.png" title="7sur7 CD" alt="Logo 7sur7 CD | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="http://times.cd/2020/03/23/rdc-lutte-contre-coronavirus-le-ministre-des-ptntic-augutin-kibassa-maliba-met-a-la-disposition-du-ministere-de-la-sante-une-application-mobile-denommee-covid-19-info/" target="_blank">
+            <img src="assets/press/times.png" title="Times CD" alt="Logo Times CD | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://www.pinshasa.com/covid19?locale=fr" target="_blank">
+            <img src="assets/press/pinshasa.png" title="Pinshasa" alt="Logo Pinshasa | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="http://www.lesnews.cd/?coronavirus-suivre-la-pandemie-en-rdc-sur-covid-19info-cd-offert-par-le-ministere-des-ptntic" target="_blank">
+            <img src="assets/press/les-news.png" title="Les News" alt="Logo Les News | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://election-net.com/covid19-tout-sur-la-nouvelle-application-mise-au-point-par-le-ministere-de-pt-ntic-remise/" target="_blank">
+            <img src="assets/press/election-net.png" title="Election Net" alt="Logo Election Net | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://habarirdc.net/conseils-occuper-internet-confinement/" target="_blank">
+            <img src="assets/press/habari-rdc.png" title="Habari RDC" alt="Logo Habari RDC | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://www.congonumerique.com/rdc-le-ministere-de-la-sante-se-tourne-vers-les-outils-technologiques-pour-sensibiliser-contre-le-covid-19/" target="_blank">
+            <img src="assets/press/congo-numerique.png" title="Congo Numérique" alt="Logo Congo Numérique | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://acturdc.com/rdc-augustin-kibassa-met-a-la-disposition-du-ministere-de-la-sante-lapplication-mobile-covid-19-info/" target="_blank">
+            <img src="assets/press/actu-rdc.png" title="Actu RDC" alt="Logo Actu RDC | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://laprunellerdc.info/coronavirus-le-rwanda-prolonge-de-deux-semaines-le-confinement-total/" target="_blank">
+            <img src="assets/press/la-prunelle-rdc.png" title="La Prunelle RDC Info" alt="Logo La Prunelle RDC Info | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="https://hazetu.com/covid-19info-cd-la-plateforme-dinformation-en-ligne/" target="_blank">
+            <img src="assets/press/hazetu.png" title="Hazetu" alt="Logo Hazetu | Covid-19Info.cd">
+          </a>
+        </div>
+        <div class="content-center h-20 m-5">
+          <a href="http://www.provinces26rdc.net/rdc-covid-19-7-nouveaux-cas-a-kinshasa-faisant-un-cumul-de-161-dont-18-deces-et-5-guerisbulletin-epidemiologique-du/" target="_blank">
+            <img src="assets/press/provinces-26-rdc.png" title="Provinces 26 RDC" alt="Logo Provinces 26 RDC | Covid-19Info.cd">
+          </a>
         </div>
       </div>
     </div>
